@@ -39,7 +39,7 @@ class OrderCloudExp extends OrderCloud
             
             throw new Exception("Selecting VM when ignoreVMs set is full", 1);
     }
-    public function updateIgnoreVMs(&$ignoreVMs, &$sCvmp, $lowVM, &$pareto) {
+    public function updateIgnoreVMs(&$ignoreVMs, &$sCvmp, $lowVM, &$pareto = null) {
         
         if (!$this->ignoreVmsOnDemand and  $this->resetIG and (count($pareto) > 1)) {
             $ignoreVMs = [];
@@ -69,9 +69,9 @@ class OrderCloudExp extends OrderCloud
                 $vmMax = $vm;
             }
         }
-        if (is_null($vmMax)) {
-            throw new Exception("Couldnt find higher VM because the hight value is greater than the smaller INT", 1);
-        }
+
+	if (is_null($vmMax)) throw new Exception("Couldnt find higher VM because the hight value is greater than the smaller INT", 1);
+        
         return $vmMax;
     }
     
@@ -79,31 +79,30 @@ class OrderCloudExp extends OrderCloud
         if(is_null($isMainInteration)) $isMainInteration = $this->finalRecursion;
         $class = get_called_class();
         $pareto = [];
-        
-        
         $cvmps = [];
 
-        //Utilizado nos teste de otimicidade, para evitar os deadlocks do optimo
+        //Avoid Deadlock on Optimality tests
         do{
             if (count($ignoreVMs) >= $baseCvmp['nvms']) return $baseCvmp;
             //Select Lower VM from the Rank
             $lowVM = $this->selectLowerVm($baseCvmp, $ignoreVMs);
         
-            //generateCVMP
+	    //generateCVMP
+	    //error_log($lowVM);
             $cvmps = $this->generateCVMP($baseCvmp, $lowVM);
         
             //foreach Possible CVMP
             $ignoreVMs[$lowVM] = $lowVM;
         
-            if(!$this->antiOptimalDeadlock) break;
+	    if(!$this->antiOptimalDeadlock) break;
         }while(count($cvmps) == 0);
-        foreach ($cvmps as $key => $cvmp) {
+
+	//It will star a new search (branch) foreach generated Scenario	
+	foreach ($cvmps as $key => $cvmp) {
             Counter::$scenarios++;
             if ($this->disablePareto or $this->isNonDominanted($baseCvmp, $cvmp)) {
                 Counter::$pareto++;
-                if ($this->useIgSetOnExploration) $ig = & $ignoreVMs;
-                else $ig = [];
-                
+                $ig = $this->useIgSetOnExploration? $ignoreVMs : [];
                 $pareto[] = $this->organize($cvmp, $ig, false);
             }
         }
@@ -120,7 +119,7 @@ class OrderCloudExp extends OrderCloud
         
         if ($isMainInteration and $continue) {
              
-            @$class::updateIgnoreVMs($ignoreVMs, $sCvmp, $lowVM, $pareto);
+            $class::updateIgnoreVMs($ignoreVMs, $sCvmp, $lowVM, $pareto);
             
             $sCvmp = $this->organize($sCvmp, $ignoreVMs, true);
         }
