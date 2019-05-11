@@ -3,5 +3,5 @@ Order@Cloud - Lab Tests
 
 
 ```
-apt install ant phpunit php-memcached
+apt install php7.2-cli php7.2-json phpunit php-memcached
 ```

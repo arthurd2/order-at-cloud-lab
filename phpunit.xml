@@ -1,0 +1,23 @@
+<phpunit colors="true" bootstrap="src/Bootstrap.php" backupGlobals="false" >
+  <listeners>
+    <listener class="PHPUnitTestListener" file="tests/TestTimesListener.php"/>
+  </listeners>
+  <php>
+    <env name="ENV_PHPUNIT_TEST" value="value"/>
+  </php>
+  <testsuites>
+    <testsuite name="Test 01" backupStaticAttributes="false">
+      <directory>tests/</directory>
+    </testsuite>
+  </testsuites>
+  <filter>
+    <whitelist processUncoveredFilesFromWhitelist="true">
+      <directory suffix=".php">src/</directory>
+    </whitelist>
+  </filter>
+  <logging>
+    <log target="coverage.xml" type="coverage-clover"/>
+    <log target="junit.xml" type="junit"/>
+    <log target="report" type="coverage-html"/><!-- -->
+  </logging>
+</phpunit>
