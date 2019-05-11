@@ -1,0 +1,3 @@
+[submodule "libs/order-at-cloud"]
+	path = libs/order-at-cloud
+	url = https://github.com/arthurd2/order-at-cloud.git
