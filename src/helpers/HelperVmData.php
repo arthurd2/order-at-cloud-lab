@@ -1,5 +1,5 @@
 <?php
-require_once "libs/vmwarephp/Bootstrap.php";
+//require_once "libs/vmwarephp/Bootstrap.php";
 define('FNVM', "data/vms.json");
 define('FNPM', "data/pms.json");
 class HelperVmData
