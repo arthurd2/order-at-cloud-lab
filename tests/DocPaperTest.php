@@ -457,7 +457,7 @@ class DocPaperTest extends TestCase
 	}
 
 	public function testGetVmsByClusters() {
-		$this->markTestIncomplete(__FUNCTION__);
+//		$this->markTestIncomplete(__FUNCTION__);
 
 		$this->assertEquals(0, count($this->_getVmsByClusters(null)));
 		$this->assertEquals(240, count($this->_getVmsByClusters('corporativo')));
